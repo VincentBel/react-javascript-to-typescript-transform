@@ -31,8 +31,8 @@ export type Factory = ts.TransformerFactory<ts.Node>;
  */
 export function reactMovePropTypesToClassTransformFactoryFactory(typeChecker: ts.TypeChecker): Factory {
     return function reactMovePropTypesToClassTransformFactory(context: ts.TransformationContext) {
-        return function reactMovePropTypesToClassTransform(sourceFile: ts.SourceFile) {
-            return visitSourceFile(sourceFile, typeChecker);
+        return function reactMovePropTypesToClassTransform(sourceFile: ts.Node) {
+            return visitSourceFile(sourceFile as ts.SourceFile, typeChecker);
         };
     };
 }

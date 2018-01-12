@@ -20,8 +20,8 @@ export type Factory = ts.TransformerFactory<ts.Node>;
  */
 export function reactRemoveStaticPropTypesMemberTransformFactoryFactory(typeChecker: ts.TypeChecker): Factory {
     return function reactRemoveStaticPropTypesMemberTransformFactory(context: ts.TransformationContext) {
-        return function reactRemoveStaticPropTypesMemberTransform(sourceFile: ts.SourceFile) {
-            return ts.visitEachChild(sourceFile, visitor, context);
+        return function reactRemoveStaticPropTypesMemberTransform(rootNode: ts.Node) {
+            return ts.visitEachChild(rootNode, visitor, context);
 
             function visitor(node: ts.Node) {
                 if (helpers.isClassDeclaration(node) && helpers.isReactComponent(node, typeChecker)) {
@@ -36,7 +36,7 @@ export function reactRemoveStaticPropTypesMemberTransformFactoryFactory(typeChec
                             if (
                                 helpers.isPropertyDeclaration(member)
                                 && helpers.hasStaticModifier(member)
-                                && helpers.isPropTypesMember(member, sourceFile)
+                                && helpers.isPropTypesMember(member)
                             ) {
                                 return false;
                             }
@@ -45,7 +45,7 @@ export function reactRemoveStaticPropTypesMemberTransformFactoryFactory(typeChec
                             if (
                                 helpers.isGetAccessorDeclaration(member)
                                 && helpers.hasStaticModifier(member)
-                                && helpers.isPropTypesMember(member, sourceFile)
+                                && helpers.isPropTypesMember(member)
                             ) {
                                 return false;
                             }

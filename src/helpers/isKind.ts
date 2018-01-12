@@ -956,25 +956,25 @@ export function isJSDocUnknownType(node: ts.Node): node is ts.JSDocUnknownType {
  * Return true if node is `JSDocArrayType`
  * @param node A TypeScript node
  */
-export function isJSDocArrayType(node: ts.Node): node is ts.JSDocArrayType {
-    return node.kind === ts.SyntaxKind.JSDocArrayType;
-}
+// export function isJSDocArrayType(node: ts.Node): node is ts.JSDocArrayType {
+//     return node.kind === ts.SyntaxKind.JSDocArrayType;
+// }
 
 /**
  * Return true if node is `JSDocUnionType`
  * @param node A TypeScript node
  */
-export function isJSDocUnionType(node: ts.Node): node is ts.JSDocUnionType {
-    return node.kind === ts.SyntaxKind.JSDocUnionType;
-}
+// export function isJSDocUnionType(node: ts.Node): node is ts.JSDocUnionType {
+//     return node.kind === ts.SyntaxKind.JSDocUnionType;
+// }
 
 /**
  * Return true if node is `JSDocTupleType`
  * @param node A TypeScript node
  */
-export function isJSDocTupleType(node: ts.Node): node is ts.JSDocTupleType {
-    return node.kind === ts.SyntaxKind.JSDocTupleType;
-}
+// export function isJSDocTupleType(node: ts.Node): node is ts.JSDocTupleType {
+//     return node.kind === ts.SyntaxKind.JSDocTupleType;
+// }
 
 /**
  * Return true if node is `JSDocNullableType`
@@ -996,25 +996,25 @@ export function isJSDocNonNullableType(node: ts.Node): node is ts.JSDocNonNullab
  * Return true if node is `JSDocRecordType`
  * @param node A TypeScript node
  */
-export function isJSDocRecordType(node: ts.Node): node is ts.JSDocRecordType {
-    return node.kind === ts.SyntaxKind.JSDocRecordType;
-}
+// export function isJSDocRecordType(node: ts.Node): node is ts.JSDocRecordType {
+//     return node.kind === ts.SyntaxKind.JSDocRecordType;
+// }
 
 /**
  * Return true if node is `JSDocRecordMember`
  * @param node A TypeScript node
  */
-export function isJSDocRecordMember(node: ts.Node): node is ts.JSDocRecordMember {
-    return node.kind === ts.SyntaxKind.JSDocRecordMember;
-}
+// export function isJSDocRecordMember(node: ts.Node): node is ts.JSDocRecordMember {
+//     return node.kind === ts.SyntaxKind.JSDocRecordMember;
+// }
 
 /**
  * Return true if node is `JSDocTypeReference`
  * @param node A TypeScript node
  */
-export function isJSDocTypeReference(node: ts.Node): node is ts.JSDocTypeReference {
-    return node.kind === ts.SyntaxKind.JSDocTypeReference;
-}
+// export function isJSDocTypeReference(node: ts.Node): node is ts.JSDocTypeReference {
+//     return node.kind === ts.SyntaxKind.JSDocTypeReference;
+// }
 
 /**
  * Return true if node is `JSDocOptionalType`
@@ -1044,17 +1044,17 @@ export function isJSDocVariadicType(node: ts.Node): node is ts.JSDocVariadicType
  * Return true if node is `JSDocConstructorType`
  * @param node A TypeScript node
  */
-export function isJSDocConstructorType(node: ts.Node): node is ts.JSDocConstructorType {
-    return node.kind === ts.SyntaxKind.JSDocConstructorType;
-}
+// export function isJSDocConstructorType(node: ts.Node): node is ts.JSDocConstructorType {
+//     return node.kind === ts.SyntaxKind.JSDocConstructorType;
+// }
 
 /**
  * Return true if node is `JSDocThisType`
  * @param node A TypeScript node
  */
-export function isJSDocThisType(node: ts.Node): node is ts.JSDocThisType {
-    return node.kind === ts.SyntaxKind.JSDocThisType;
-}
+// export function isJSDocThisType(node: ts.Node): node is ts.JSDocThisType {
+//     return node.kind === ts.SyntaxKind.JSDocThisType;
+// }
 
 /**
  * Return true if node is `JSDocTag`
@@ -1132,9 +1132,9 @@ export function isJSDocTypeLiteral(node: ts.Node): node is ts.JSDocTypeLiteral {
  * Return true if node is `JSDocLiteralType`
  * @param node A TypeScript node
  */
-export function isJSDocLiteralType(node: ts.Node): node is ts.JSDocLiteralType {
-    return node.kind === ts.SyntaxKind.JSDocLiteralType;
-}
+// export function isJSDocLiteralType(node: ts.Node): node is ts.JSDocLiteralType {
+//     return node.kind === ts.SyntaxKind.JSDocLiteralType;
+// }
 
 /**
  * Return true if node is `SyntaxList`

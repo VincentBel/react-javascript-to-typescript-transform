@@ -22,7 +22,7 @@ export function compile(filePath: string, factoryFactories: TransformFactoryFact
         factoryFactories.map(factoryFactory => factoryFactory(typeChecker), compilerOptions),
     );
 
-
+    
     if (result.diagnostics && result.diagnostics.length) {
         console.log(chalk.yellow(`
         ======================= Diagnostics for ${filePath} =======================

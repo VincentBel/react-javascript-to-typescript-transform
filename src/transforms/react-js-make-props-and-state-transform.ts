@@ -11,8 +11,8 @@ export type Factory = ts.TransformerFactory<ts.Node>;
  */
 export function reactJSMakePropsAndStateInterfaceTransformFactoryFactory(typeChecker: ts.TypeChecker): Factory {
     return function reactJSMakePropsAndStateInterfaceTransformFactory(context: ts.TransformationContext) {
-        return function reactJSMakePropsAndStateInterfaceTransform(sourceFile: ts.SourceFile) {
-            const visited = ts.visitEachChild(sourceFile, visitor, context);
+        return function reactJSMakePropsAndStateInterfaceTransform(sourceNode: ts.Node) {
+            const visited = ts.visitEachChild(sourceNode, visitor, context);
             ts.addEmitHelpers(visited, context.readEmitHelpers());
 
             return visited;
@@ -34,16 +34,27 @@ export function reactJSMakePropsAndStateInterfaceTransformFactoryFactory(typeChe
                     return classDeclaration;
                 }
 
-                const firstHeritageClauses = classDeclaration.heritageClauses[0];
-                const expressionWithTypeArguments = firstHeritageClauses.types[0];
+                const firstHeritageClause = classDeclaration.heritageClauses[0];
+                const newFirstHeritageClauseTypes = helpers.replaceItem(
+                    firstHeritageClause.types,
+                    firstHeritageClause.types[0],
+                    ts.updateExpressionWithTypeArguments(
+                        firstHeritageClause.types[0],
+                        [
+                            getPropsTypeOfReactComponentClass(classDeclaration),
+                            getStateTypeOfReactComponentClass(classDeclaration),
+                        ],
+                        firstHeritageClause.types[0].expression,
+                    )
+                )
 
-                firstHeritageClauses.types[0] = ts.updateExpressionWithTypeArguments(
-                    expressionWithTypeArguments,
-                    [
-                        getPropsTypeOfReactComponentClass(classDeclaration),
-                        getStateTypeOfReactComponentClass(classDeclaration),
-                    ],
-                    expressionWithTypeArguments.expression,
+                const newHeritageClauses = helpers.replaceItem(
+                    classDeclaration.heritageClauses,
+                    firstHeritageClause,
+                    ts.updateHeritageClause(
+                        firstHeritageClause,
+                        newFirstHeritageClauseTypes,
+                    )
                 )
 
                 return ts.updateClassDeclaration(
@@ -52,7 +63,7 @@ export function reactJSMakePropsAndStateInterfaceTransformFactoryFactory(typeChe
                     classDeclaration.modifiers,
                     classDeclaration.name,
                     classDeclaration.typeParameters,
-                    classDeclaration.heritageClauses,
+                    newHeritageClauses,
                     classDeclaration.members,
                 );
 
@@ -60,7 +71,7 @@ export function reactJSMakePropsAndStateInterfaceTransformFactoryFactory(typeChe
                     const staticPropTypesMember = helpers.find(classDeclaration.members, (member) => {
                         return helpers.isPropertyDeclaration(member) &&
                             helpers.hasStaticModifier(member) &&
-                            helpers.isPropTypesMember(member, sourceFile);
+                            helpers.isPropTypesMember(member);
                     });
 
                     if (
@@ -75,7 +86,7 @@ export function reactJSMakePropsAndStateInterfaceTransformFactoryFactory(typeChe
                     const staticPropTypesGetterMember = helpers.find(classDeclaration.members, (member) => {
                         return helpers.isGetAccessorDeclaration(member) &&
                             helpers.hasStaticModifier(member) &&
-                            helpers.isPropTypesMember(member, sourceFile);
+                            helpers.isPropTypesMember(member);
                     });
 
                     if (
@@ -215,7 +226,7 @@ export function reactJSMakePropsAndStateInterfaceTransformFactoryFactory(typeChe
              * @param objectLiteral
              */
             function buildInterfaceFromPropTypeObjectLiteral(objectLiteral: ts.ObjectLiteralExpression) {
-                const resultObjectLiteral = objectLiteral.properties.reduce(
+                return objectLiteral.properties.reduce(
                     (result, propertyAssignment: ts.PropertyAssignment) => {
                         const name = propertyAssignment.name.getText();
                         if (!helpers.isPropertyAccessExpression(propertyAssignment.initializer)) {
@@ -245,9 +256,6 @@ export function reactJSMakePropsAndStateInterfaceTransformFactoryFactory(typeChe
                         result.members.push(propertySignature)
                         return result;
                 }, ts.createTypeLiteralNode([]));
-
-
-                return resultObjectLiteral;
             }
 
             /**

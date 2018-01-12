@@ -17,11 +17,15 @@ export type Factory = ts.TransformerFactory<ts.Node>;
  */
 export function reactRemovePropTypesAssignmentTransformFactoryFactory(typeChecker: ts.TypeChecker): Factory{
     return function reactRemovePropTypesAssignmentTransformFactory(context: ts.TransformationContext) {
-        return function reactRemovePropTypesAssignmentTransform(sourceFile: ts.SourceFile) {
-            return ts.updateSourceFileNode(
-                sourceFile,
-                sourceFile.statements.filter(s => !helpers.isReactPropTypeAssignmentStatement(s)),
-            );
+        return function reactRemovePropTypesAssignmentTransform(rootNode: ts.Node) {
+            const visitor = (node: ts.Node) => {
+                if (helpers.isReactPropTypeAssignmentStatement(node)) {
+                    return undefined
+                }
+                return node
+            }
+
+            return ts.visitEachChild(rootNode, visitor, context)
         }
     }
 }

@@ -16,8 +16,8 @@ import * as helpers from '../helpers';
  */
 export function reactHoistGenericsTransformFactoryFactory(typeChecker: ts.TypeChecker): ts.TransformerFactory<ts.Node> {
     return function reactHoistGenericsTransformFactory(context: ts.TransformationContext) {
-        return function reactHoistGenericsTransform(node: ts.SourceFile) {
-            return visitSourceFile(node);
+        return function reactHoistGenericsTransform(node: ts.Node) {
+            return visitSourceFile(node as ts.SourceFile);
         };
     };
 
