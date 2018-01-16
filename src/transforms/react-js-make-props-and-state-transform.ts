@@ -356,7 +356,7 @@ function getTypeFromReactPropTypeExpression(propertyKey: string, node: ts.Expres
       const argument = node.arguments[0];
       if (ts.isArrayLiteralExpression(argument)) {
         if (argument.elements.every(elm => ts.isStringLiteral(elm) || ts.isNumericLiteral(elm))) {
-          const enumName = `${propertyKey}Enum`;
+          const enumName = `${propertyKey.charAt(0).toUpperCase() + propertyKey.slice(1)}Enum`;
           const enumDeclaration = ts.createEnumDeclaration(
             [],
             [ts.createToken(ts.SyntaxKind.ConstKeyword)],

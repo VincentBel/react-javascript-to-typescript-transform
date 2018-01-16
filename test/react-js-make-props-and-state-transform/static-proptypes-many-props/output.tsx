@@ -1,12 +1,12 @@
 import * as React from 'react';
 
-const enum oneOfEnum {
+const enum OneOfEnum {
     a = 'a',
     b = 'b',
     c = 'c'
 }
 
-const enum oneOfRequiredEnum {
+const enum OneOfRequiredEnum {
     a = 'a',
     b = 'b',
     c = 'c'
@@ -21,7 +21,7 @@ export default class MyComponent extends React.Component<{
         object?: object;
         string?: string;
         node?: React.ReactNode;
-        oneOf?: oneOfEnum;
+        oneOf?: OneOfEnum;
         element?: JSX.Element;
         anyRequired: any;
         arrayRequired: any[];
@@ -32,7 +32,7 @@ export default class MyComponent extends React.Component<{
         stringRequired: string;
         nodeRequired: React.ReactNode;
         elementRequired: JSX.Element;
-        oneOfRequired: oneOfRequiredEnum;
+        oneOfRequired: OneOfRequiredEnum;
     }, {
     }> {
     static propTypes = {
