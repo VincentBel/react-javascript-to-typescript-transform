@@ -2,19 +2,29 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "args": [],
+            "type": "node",
+            "request": "launch",
+            "name": "Launch via NPM",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run-script",
+                "debug"
+            ],
+            "port": 9229
+        },
+        {
+            "args": ["--watch"],
             "cwd": "${workspaceRoot}",
             "env": {
                 "NODE_ENV": "test"
             },
-            "externalConsole": false,
+            "console":"integratedTerminal",
             "name": "Run Tests",
-            "outDir": "${workspaceRoot}/dist",
-            "preLaunchTask": "compile",
+            "outFiles": ["${workspaceRoot}/dist"],
+            // "preLaunchTask": "compile",
             "program": "${workspaceRoot}/node_modules/.bin/jest",
             "request": "launch",
             "runtimeArgs": [
-
             ],
             "runtimeExecutable": null,
             "sourceMaps": true,

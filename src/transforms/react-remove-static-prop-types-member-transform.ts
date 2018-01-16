@@ -2,7 +2,7 @@ import * as ts from 'typescript';
 
 import * as helpers from '../helpers';
 
-export type Factory = ts.TransformerFactory<ts.Node>;
+export type Factory = ts.TransformerFactory<ts.SourceFile>;
 
 /**
  * Remove static propTypes
@@ -20,8 +20,8 @@ export type Factory = ts.TransformerFactory<ts.Node>;
  */
 export function reactRemoveStaticPropTypesMemberTransformFactoryFactory(typeChecker: ts.TypeChecker): Factory {
     return function reactRemoveStaticPropTypesMemberTransformFactory(context: ts.TransformationContext) {
-        return function reactRemoveStaticPropTypesMemberTransform(rootNode: ts.Node) {
-            return ts.visitEachChild(rootNode, visitor, context);
+        return function reactRemoveStaticPropTypesMemberTransform(sourceFile: ts.SourceFile) {
+            return ts.visitEachChild(sourceFile, visitor, context);
 
             function visitor(node: ts.Node) {
                 if (helpers.isClassDeclaration(node) && helpers.isReactComponent(node, typeChecker)) {
@@ -36,8 +36,9 @@ export function reactRemoveStaticPropTypesMemberTransformFactoryFactory(typeChec
                             if (
                                 helpers.isPropertyDeclaration(member)
                                 && helpers.hasStaticModifier(member)
-                                && helpers.isPropTypesMember(member)
+                                && helpers.isPropTypesMember(member, sourceFile)
                             ) {
+                                // console.log('remove propType member');
                                 return false;
                             }
 
@@ -45,8 +46,9 @@ export function reactRemoveStaticPropTypesMemberTransformFactoryFactory(typeChec
                             if (
                                 helpers.isGetAccessorDeclaration(member)
                                 && helpers.hasStaticModifier(member)
-                                && helpers.isPropTypesMember(member)
+                                && helpers.isPropTypesMember(member, sourceFile)
                             ) {
+                                // console.log('remove get propType member');
                                 return false;
                             }
                             return true;

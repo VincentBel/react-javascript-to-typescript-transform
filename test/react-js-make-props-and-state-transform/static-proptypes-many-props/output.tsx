@@ -1,5 +1,17 @@
 import * as React from 'react';
 
+const enum oneOfEnum {
+    a = 'a',
+    b = 'b',
+    c = 'c'
+}
+
+const enum oneOfRequiredEnum {
+    a = 'a',
+    b = 'b',
+    c = 'c'
+}
+
 export default class MyComponent extends React.Component<{
         any?: any;
         array?: any[];
@@ -9,6 +21,7 @@ export default class MyComponent extends React.Component<{
         object?: object;
         string?: string;
         node?: React.ReactNode;
+        oneOf?: oneOfEnum;
         element?: JSX.Element;
         anyRequired: any;
         arrayRequired: any[];
@@ -19,7 +32,9 @@ export default class MyComponent extends React.Component<{
         stringRequired: string;
         nodeRequired: React.ReactNode;
         elementRequired: JSX.Element;
-    }, {}> {
+        oneOfRequired: oneOfRequiredEnum;
+    }, {
+    }> {
     static propTypes = {
         children: React.PropTypes.node,
         any: React.PropTypes.any,
@@ -30,6 +45,7 @@ export default class MyComponent extends React.Component<{
         object: React.PropTypes.object,
         string: React.PropTypes.string,
         node: React.PropTypes.node,
+        oneOf: React.PropTypes.oneOf(['a', 'b', 'c']),
         element: React.PropTypes.element,
         anyRequired: React.PropTypes.any.isRequired,
         arrayRequired: React.PropTypes.array.isRequired,
@@ -40,6 +56,7 @@ export default class MyComponent extends React.Component<{
         stringRequired: React.PropTypes.string.isRequired,
         nodeRequired: React.PropTypes.node.isRequired,
         elementRequired: React.PropTypes.element.isRequired,
+        oneOfRequired: React.PropTypes.oneOf(['a', 'b', 'c']).isRequired,
     };
     render() {
         return <div />;

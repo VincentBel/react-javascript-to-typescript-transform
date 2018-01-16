@@ -14,10 +14,10 @@ import * as helpers from '../helpers';
  */
 export function collapseIntersectionInterfacesTransformFactoryFactory(
         typeChecker: ts.TypeChecker,
-    ): ts.TransformerFactory<ts.Node> {
+    ): ts.TransformerFactory<ts.SourceFile> {
     return function collapseIntersectionInterfacesTransformFactory(context: ts.TransformationContext) {
-        return function collapseIntersectionInterfacesTransform(rootNode: ts.Node) {
-            const visited = ts.visitEachChild(rootNode, visitor, context);
+        return function collapseIntersectionInterfacesTransform(sourceFile: ts.SourceFile) {
+            const visited = ts.visitEachChild(sourceFile, visitor, context);
             ts.addEmitHelpers(visited, context.readEmitHelpers());
 
             return visited;
@@ -32,11 +32,11 @@ export function collapseIntersectionInterfacesTransformFactoryFactory(
 
             function visitTypeAliasDeclaration(node: ts.TypeAliasDeclaration) {
                 if (
-                    ts.isIntersectionTypeNode(node.type)
-                    && node.type.types.every((type) => ts.isTypeLiteralNode(type))
+                    helpers.isIntersectionTypeNode(node.type)
+                    && node.type.types.every((type) => helpers.isTypeLiteralNode(type))
                 ) {
                     const allMembers = (node.type.types as ts.NodeArray<ts.TypeLiteralNode>)
-                        .map((type: ts.TypeLiteralNode) => type.members)
+                        .map(type => type.members)
                         .reduce((all, members) => ts.createNodeArray(all.concat(members)), ts.createNodeArray([]));
 
                     return ts.createTypeAliasDeclaration(

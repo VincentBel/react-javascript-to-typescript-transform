@@ -11,6 +11,7 @@ export default class MyComponent extends React.Component {
         object: React.PropTypes.object,
         string: React.PropTypes.string,
         node: React.PropTypes.node,
+        oneOf: React.PropTypes.oneOf(['a', 'b', 'c']),
         element: React.PropTypes.element,
         anyRequired: React.PropTypes.any.isRequired,
         arrayRequired: React.PropTypes.array.isRequired,
@@ -21,6 +22,7 @@ export default class MyComponent extends React.Component {
         stringRequired: React.PropTypes.string.isRequired,
         nodeRequired: React.PropTypes.node.isRequired,
         elementRequired: React.PropTypes.element.isRequired,
+        oneOfRequired: React.PropTypes.oneOf(['a', 'b', 'c']).isRequired,
     };
     render() {
         return <div />;
