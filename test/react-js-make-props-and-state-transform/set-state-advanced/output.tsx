@@ -1,18 +1,17 @@
 import * as React from 'react';
-
-export default class MyComponent extends React.Component<{
-    }, { foo: number; bar: number; } & { baz: number; } & { something: { big: number; here: string; of: { a: number; }[]; }; }> {
+type MyComponentProps = {
+};
+type MyComponentState = { foo: number; bar: number; } & { baz: number; } & { something: { big: number; here: string; of: { a: number; }[]; }; };
+export default class MyComponent extends React.Component<MyComponentProps, MyComponentState> {
     render() {
         return <button onClick={this.onclick.bind(this)}/>;
     }
-
     onclick() {
         if (Math.random() > 0.5) {
             this.setState({ foo: 1, bar: 2 });
         }
         this.otherMethod();
     }
-
     otherMethod() {
         for (const foo of [1, 2, 3]) {
             if (foo > 2) {
@@ -20,7 +19,6 @@ export default class MyComponent extends React.Component<{
             }
         }
     }
-
     addLargeObjectToState() {
         this.setState({
             something: {

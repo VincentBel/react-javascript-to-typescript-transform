@@ -1,8 +1,9 @@
 import * as React from 'react';
-
-export default class MyComponent extends React.Component<{
-    }, {
-    }> {
+type MyComponentProps = {
+};
+type MyComponentState = {
+};
+export default class MyComponent extends React.Component<MyComponentProps, MyComponentState> {
     render() {
         return <div />;
     }

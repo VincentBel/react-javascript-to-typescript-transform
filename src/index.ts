@@ -5,9 +5,6 @@ import {
     reactJSMakePropsAndStateInterfaceTransformFactoryFactory,
 } from './transforms/react-js-make-props-and-state-transform';
 import {
-    reactHoistGenericsTransformFactoryFactory,
-} from './transforms/react-hoist-generics-transform';
-import {
     reactRemovePropTypesAssignmentTransformFactoryFactory,
 } from './transforms/react-remove-prop-types-assignment-transform';
 import {
@@ -23,7 +20,6 @@ import {
 export {
     reactMovePropTypesToClassTransformFactoryFactory,
     reactJSMakePropsAndStateInterfaceTransformFactoryFactory,
-    reactHoistGenericsTransformFactoryFactory,
     collapseIntersectionInterfacesTransformFactoryFactory,
     reactRemovePropTypesAssignmentTransformFactoryFactory,
     reactRemoveStaticPropTypesMemberTransformFactoryFactory,
@@ -33,7 +29,6 @@ export {
 export const allTransforms = [
     reactMovePropTypesToClassTransformFactoryFactory,
     reactJSMakePropsAndStateInterfaceTransformFactoryFactory,
-    reactHoistGenericsTransformFactoryFactory,
     collapseIntersectionInterfacesTransformFactoryFactory,
     reactRemovePropTypesAssignmentTransformFactoryFactory,
     reactRemoveStaticPropTypesMemberTransformFactoryFactory,

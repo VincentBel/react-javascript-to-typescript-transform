@@ -11,30 +11,31 @@ const enum OneOfRequiredEnum {
     b = 'b',
     c = 'c'
 }
-
-export default class MyComponent extends React.Component<{
-        any?: any;
-        array?: any[];
-        bool?: boolean;
-        func?: (...args: any[]) => any;
-        number?: number;
-        object?: object;
-        string?: string;
-        node?: React.ReactNode;
-        oneOf?: OneOfEnum;
-        element?: JSX.Element;
-        anyRequired: any;
-        arrayRequired: any[];
-        boolRequired: boolean;
-        funcRequired: (...args: any[]) => any;
-        numberRequired: number;
-        objectRequired: object;
-        stringRequired: string;
-        nodeRequired: React.ReactNode;
-        elementRequired: JSX.Element;
-        oneOfRequired: OneOfRequiredEnum;
-    }, {
-    }> {
+type MyComponentProps = {
+    any?: any;
+    array?: any[];
+    bool?: boolean;
+    func?: (...args: any[]) => any;
+    number?: number;
+    object?: object;
+    string?: string;
+    node?: React.ReactNode;
+    oneOf?: OneOfEnum;
+    element?: JSX.Element;
+    anyRequired: any;
+    arrayRequired: any[];
+    boolRequired: boolean;
+    funcRequired: (...args: any[]) => any;
+    numberRequired: number;
+    objectRequired: object;
+    stringRequired: string;
+    nodeRequired: React.ReactNode;
+    elementRequired: JSX.Element;
+    oneOfRequired: OneOfRequiredEnum;
+};
+type MyComponentState = {
+};
+export default class MyComponent extends React.Component<MyComponentProps, MyComponentState> {
     static propTypes = {
         children: React.PropTypes.node,
         any: React.PropTypes.any,
