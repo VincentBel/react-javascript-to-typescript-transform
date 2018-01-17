@@ -16,8 +16,8 @@ export function reactJSMakePropsAndStateInterfaceTransformFactoryFactory(
   return function reactJSMakePropsAndStateInterfaceTransformFactory(
     context: ts.TransformationContext,
   ) {
-    return function reactJSMakePropsAndStateInterfaceTransform(sourceNode: ts.SourceFile) {
-      const visited = visitSourceFile(sourceNode as ts.SourceFile);
+    return function reactJSMakePropsAndStateInterfaceTransform(sourceFile: ts.SourceFile) {
+      const visited = visitSourceFile(sourceFile as ts.SourceFile);
       ts.addEmitHelpers(visited, context.readEmitHelpers());
       return visited;
 
@@ -27,8 +27,34 @@ export function reactJSMakePropsAndStateInterfaceTransformFactoryFactory(
             helpers.isClassDeclaration(statement) &&
             helpers.isReactComponent(statement, typeChecker)
           ) {
-            return visitReactClassDeclaration(statement, sourceNode as ts.SourceFile, typeChecker);
+            return visitReactClassDeclaration(statement, sourceFile, typeChecker);
           }
+        }
+
+        for (const statement of sourceFile.statements) {
+          if (
+            ts.isExpressionStatement(statement) &&
+            ts.isBinaryExpression(statement.expression) &&
+            helpers.isReactPropTypeAssignmentStatement(statement)
+          ) {
+            const componentName =
+            ts.isPropertyAccessExpression(statement.expression.left)
+            ? statement.expression.left.expression.getText() 
+            : ''
+
+            const component = helpers.find(sourceFile.statements, s => {
+              return (ts.isFunctionDeclaration(s) && s.name !== undefined && s.name.getText() === componentName) ||
+              (ts.isVariableStatement(s) && s.declarationList.declarations[0].name.getText() === componentName)
+            })
+
+            if (component) {
+            return visitReactStatelessComponent(
+              component as ts.FunctionDeclaration | ts.VariableStatement,
+              statement,
+              sourceFile
+            )
+          }
+        }
         }
         return sourceFile;
       }
@@ -439,4 +465,61 @@ function isPropTypeRequired(node: ts.Expression) {
 
   const text = node.getText().replace(/React\.PropTypes\./, '');
   return /\.isRequired/.test(text);
+}
+
+function visitReactStatelessComponent(
+  component: ts.FunctionDeclaration | ts.VariableStatement,
+  propTypesExpressionStatement: ts.ExpressionStatement,
+  sourceFile: ts.SourceFile,
+) {
+  let arrowFuncComponent = helpers.convertReactStatelessFunctionToArrowFunction(component)
+  let componentName = arrowFuncComponent.declarationList.declarations[0].name.getText()
+  let componentInitializer =  arrowFuncComponent.declarationList.declarations[0].initializer
+
+  // generate component props interface from propTypes
+  const { type: propType, typeDeclarations } = getPropTypesFromTypeAssignment(propTypesExpressionStatement)
+
+  const propTypeName = `${componentName}Props`;
+  const propTypeDeclaration = ts.createTypeAliasDeclaration([], [], propTypeName, [], propType);
+  const propTypeRef = ts.createTypeReferenceNode(propTypeName, []);
+
+  let componentType = ts.createTypeReferenceNode(
+    ts.createQualifiedName(ts.createIdentifier('React'), 'StatelessComponent'),
+    [propTypeRef]
+  )
+
+  // replace component with ts stateless component
+  const typedComponent = ts.createVariableStatement(
+    undefined,
+    [ts.createVariableDeclaration(
+      componentName,
+      componentType,
+      componentInitializer,
+    )]
+  );
+
+  const allTypeDeclarations = [...typeDeclarations, propTypeDeclaration];
+  let statements = helpers.insertBefore(
+    sourceFile.statements,
+    component,
+    allTypeDeclarations,
+  );
+
+  statements = helpers.replaceItem(statements, component, typedComponent);
+  return ts.updateSourceFileNode(sourceFile, statements);
+}
+
+function getPropTypesFromTypeAssignment(propTypesExpressionStatement: ts.ExpressionStatement) {
+    if (
+    propTypesExpressionStatement !== undefined &&
+    ts.isBinaryExpression(propTypesExpressionStatement.expression) &&
+    helpers.isObjectLiteralExpression(propTypesExpressionStatement.expression.right)
+  ) {
+    return buildInterfaceFromPropTypeObjectLiteral(propTypesExpressionStatement.expression.right);
+  }
+
+  return {
+    type: ts.createTypeLiteralNode([]),
+    typeDeclarations: [],
+  };
 }

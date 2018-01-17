@@ -19,10 +19,10 @@ export function compile(filePath: string, factoryFactories: TransformFactoryFact
 
     const result = ts.transform(
         sourceFiles,
-        factoryFactories.map(factoryFactory => factoryFactory(typeChecker), compilerOptions),
+        factoryFactories.map(factoryFactory => factoryFactory(typeChecker)),
+        compilerOptions
     );
 
-    
     if (result.diagnostics && result.diagnostics.length) {
         console.log(chalk.yellow(`
         ======================= Diagnostics for ${filePath} =======================

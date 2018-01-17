@@ -109,6 +109,34 @@ export function isPropTypesMember(classMember: ts.ClassElement, sourceFile: ts.S
   return text === 'propTypes';
 }
 
+export function convertReactStatelessFunctionToArrowFunction(
+  statelessFunc: ts.FunctionDeclaration | ts.VariableStatement
+) {
+  if (ts.isVariableStatement(statelessFunc)) return statelessFunc
+
+  const funcName = statelessFunc.name || 'Component'
+  const funcBody = statelessFunc.body || ts.createBlock([])
+
+  const initializer = ts.createArrowFunction(
+    undefined,
+    undefined,
+    statelessFunc.parameters,
+    undefined,
+    // ts.createToken(ts.SyntaxKind.EqualsGreaterThanToken),
+    undefined,
+    funcBody,
+  )
+
+  return ts.createVariableStatement(
+    undefined,
+    ts.createVariableDeclarationList(
+      [ts.createVariableDeclaration(funcName, undefined, initializer)],
+      // TODO: Why this doesn't work?
+      ts.NodeFlags.Const,
+    )
+  )
+}
+
 // TODO: replace following functions with Lodash?
 
 export { find, some as has };
