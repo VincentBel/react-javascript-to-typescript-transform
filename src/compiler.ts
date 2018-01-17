@@ -14,7 +14,7 @@ export function compile(filePath: string, factoryFactories: TransformFactoryFact
     };
 
     const program = ts.createProgram([filePath], compilerOptions);
-    const sourceFiles = program.getSourceFiles().filter(sf => !sf.isDeclarationFile);
+    const sourceFiles = program.getSourceFiles().filter(sf => sf.fileName === filePath);
     const typeChecker = program.getTypeChecker();
 
     const result = ts.transform(
