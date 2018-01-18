@@ -343,7 +343,7 @@ function buildInterfaceFromPropTypeObjectLiteral(objectLiteral: ts.ObjectLiteral
     type: ts.createTypeLiteralNode(typeMembersAndDecls.map(m => m.member)),
     typeDeclarations: typeMembersAndDecls.reduce(
       (res, current) => res.concat(current.typeDeclarations),
-      [] as Array<ts.EnumDeclaration>,
+      [] as Array<ts.DeclarationStatement>,
     ),
   };
 }
@@ -355,7 +355,7 @@ function buildInterfaceFromPropTypeObjectLiteral(objectLiteral: ts.ObjectLiteral
  */
 function getTypeFromReactPropTypeExpression(propertyKey: string, node: ts.Expression) {
   let type = null;
-  let typeDeclarations = [];
+  let typeDeclarations: ts.DeclarationStatement[] = [];
   if (ts.isPropertyAccessExpression(node)) {
     /**
      * PropTypes.array,
@@ -417,17 +417,11 @@ function getTypeFromReactPropTypeExpression(propertyKey: string, node: ts.Expres
       const argument = node.arguments[0];
       if (ts.isArrayLiteralExpression(argument)) {
         if (argument.elements.every(elm => ts.isStringLiteral(elm) || ts.isNumericLiteral(elm))) {
-          const enumName = `${propertyKey.charAt(0).toUpperCase() + propertyKey.slice(1)}Enum`;
-          const enumDeclaration = ts.createEnumDeclaration(
-            [],
-            [ts.createToken(ts.SyntaxKind.ConstKeyword)],
-            enumName,
+          type = ts.createUnionTypeNode(
             (argument.elements as ts.NodeArray<ts.StringLiteral | ts.NumericLiteral>).map(elm =>
-              ts.createEnumMember(elm.text, elm),
+              ts.createLiteralTypeNode(elm)
             ),
-          );
-          type = ts.createTypeReferenceNode(enumName, undefined);
-          typeDeclarations.push(enumDeclaration);
+          )
         }
       }
     } else if (/oneOfType/.test(text)) {

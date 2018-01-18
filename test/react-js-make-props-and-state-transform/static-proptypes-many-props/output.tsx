@@ -1,16 +1,5 @@
 import * as React from 'react';
 
-const enum OneOfEnum {
-    a = 'a',
-    b = 'b',
-    c = 'c'
-}
-
-const enum OneOfRequiredEnum {
-    a = 'a',
-    b = 'b',
-    c = 'c'
-}
 type MyComponentProps = {
     any?: any;
     array?: any[];
@@ -20,7 +9,7 @@ type MyComponentProps = {
     object?: object;
     string?: string;
     node?: React.ReactNode;
-    oneOf?: OneOfEnum;
+    oneOf?: 'a' | 'b' | 'c';
     element?: JSX.Element;
     anyRequired: any;
     arrayRequired: any[];
@@ -31,7 +20,7 @@ type MyComponentProps = {
     stringRequired: string;
     nodeRequired: React.ReactNode;
     elementRequired: JSX.Element;
-    oneOfRequired: OneOfRequiredEnum;
+    oneOfRequired: 'a' | 'b' | 'c';
 };
 type MyComponentState = {
 };
