@@ -131,13 +131,10 @@ export function convertReactStatelessFunctionToArrowFunction(
     undefined,
     ts.createVariableDeclarationList(
       [ts.createVariableDeclaration(funcName, undefined, initializer)],
-      // TODO: Why this doesn't work?
       ts.NodeFlags.Const,
     )
   )
 }
-
-// TODO: replace following functions with Lodash?
 
 export { find, some as has };
 

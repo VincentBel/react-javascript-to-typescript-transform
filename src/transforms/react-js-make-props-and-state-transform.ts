@@ -485,11 +485,14 @@ function visitReactStatelessComponent(
   // replace component with ts stateless component
   const typedComponent = ts.createVariableStatement(
     undefined,
-    [ts.createVariableDeclaration(
-      componentName,
-      componentType,
-      componentInitializer,
-    )]
+    ts.createVariableDeclarationList(
+      [ts.createVariableDeclaration(
+        componentName,
+        componentType,
+        componentInitializer,
+      )],
+      arrowFuncComponent.declarationList.flags
+    )
   );
 
   const allTypeDeclarations = [...typeDeclarations, propTypeDeclaration];
