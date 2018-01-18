@@ -478,7 +478,7 @@ function visitReactStatelessComponent(
   const propTypeRef = ts.createTypeReferenceNode(propTypeName, []);
 
   let componentType = ts.createTypeReferenceNode(
-    ts.createQualifiedName(ts.createIdentifier('React'), 'StatelessComponent'),
+    ts.createQualifiedName(ts.createIdentifier('React'), 'SFC'),
     [propTypeRef]
   )
 
