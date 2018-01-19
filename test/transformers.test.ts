@@ -17,6 +17,7 @@ import {
     reactRemoveStaticPropTypesMemberTransformFactoryFactory,
     collapseIntersectionInterfacesTransformFactoryFactory,
     reactRemovePropTypesImportTransformFactoryFactory,
+    reactImportTransformFactoryFactory,
     allTransforms,
     compile,
     TransformFactoryFactory
@@ -32,6 +33,7 @@ const transformToFolderMap: [string, TransformFactoryFactory[]][] = [
     ['collapse-intersection-interfaces-transform', [collapseIntersectionInterfacesTransformFactoryFactory]],
     ['react-move-prop-types-to-class-transform', [reactMovePropTypesToClassTransformFactoryFactory]],
     ['react-remove-prop-types-import', [reactRemovePropTypesImportTransformFactoryFactory]],
+    ['react-import', [reactImportTransformFactoryFactory]],
     ['end-to-end', allTransforms],
 ];
 
