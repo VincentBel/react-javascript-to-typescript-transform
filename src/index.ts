@@ -19,6 +19,7 @@ import {
 import {
     reactRemoveImportFromPropTypesModuleTransformFactoryFactory
  } from './transforms/react-remove-import-from-prop-types';
+import { reactImportTransformFactoryFactory } from "./transforms/react-import";
 
 export {
     reactMovePropTypesToClassTransformFactoryFactory,
@@ -27,6 +28,7 @@ export {
     reactRemovePropTypesAssignmentTransformFactoryFactory,
     reactRemoveStaticPropTypesMemberTransformFactoryFactory,
     reactRemoveImportFromPropTypesModuleTransformFactoryFactory,
+    reactImportTransformFactoryFactory,
     compile,
 };
 
@@ -37,6 +39,7 @@ export const allTransforms = [
     reactRemovePropTypesAssignmentTransformFactoryFactory,
     reactRemoveStaticPropTypesMemberTransformFactoryFactory,
     reactRemoveImportFromPropTypesModuleTransformFactoryFactory,
+    reactImportTransformFactoryFactory,
 ];
 
 export type TransformFactoryFactory = (typeChecker: ts.TypeChecker) => ts.TransformerFactory<ts.SourceFile>;
