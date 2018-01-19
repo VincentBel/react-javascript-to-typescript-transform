@@ -16,6 +16,9 @@ import {
 import {
     reactRemoveStaticPropTypesMemberTransformFactoryFactory,
 } from './transforms/react-remove-static-prop-types-member-transform';
+import {
+    reactRemoveImportFromPropTypesModuleTransformFactoryFactory
+ } from './transforms/react-remove-import-from-prop-types';
 
 export {
     reactMovePropTypesToClassTransformFactoryFactory,
@@ -23,6 +26,7 @@ export {
     collapseIntersectionInterfacesTransformFactoryFactory,
     reactRemovePropTypesAssignmentTransformFactoryFactory,
     reactRemoveStaticPropTypesMemberTransformFactoryFactory,
+    reactRemoveImportFromPropTypesModuleTransformFactoryFactory,
     compile,
 };
 
@@ -32,6 +36,7 @@ export const allTransforms = [
     collapseIntersectionInterfacesTransformFactoryFactory,
     reactRemovePropTypesAssignmentTransformFactoryFactory,
     reactRemoveStaticPropTypesMemberTransformFactoryFactory,
+    reactRemoveImportFromPropTypesModuleTransformFactoryFactory,
 ];
 
 export type TransformFactoryFactory = (typeChecker: ts.TypeChecker) => ts.TransformerFactory<ts.SourceFile>;

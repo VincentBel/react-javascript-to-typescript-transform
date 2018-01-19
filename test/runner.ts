@@ -12,8 +12,9 @@ import {
     reactMovePropTypesToClassTransformFactoryFactory,
     reactRemovePropTypesAssignmentTransformFactoryFactory,
     reactRemoveStaticPropTypesMemberTransformFactoryFactory,
-    allTransforms,
     collapseIntersectionInterfacesTransformFactoryFactory,
+    reactRemoveImportFromPropTypesModuleTransformFactoryFactory,
+    allTransforms,
     compile,
     TransformFactoryFactory
 } from '../src';
@@ -26,6 +27,7 @@ const transformToFolderMap: [string, TransformFactoryFactory[]][] = [
     ['react-remove-prop-types-assignment-transform', [reactRemovePropTypesAssignmentTransformFactoryFactory]],
     ['collapse-intersection-interfaces-transform', [collapseIntersectionInterfacesTransformFactoryFactory]],
     ['react-move-prop-types-to-class-transform', [reactMovePropTypesToClassTransformFactoryFactory]],
+    ['react-remove-import-from-prop-types', [reactRemoveImportFromPropTypesModuleTransformFactoryFactory]],
     ['end-to-end', allTransforms],
 ];
 
