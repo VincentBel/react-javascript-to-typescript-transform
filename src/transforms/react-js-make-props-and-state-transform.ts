@@ -484,7 +484,7 @@ function visitReactStatelessComponent(
 
   // replace component with ts stateless component
   const typedComponent = ts.createVariableStatement(
-    undefined,
+    arrowFuncComponent.modifiers,
     ts.createVariableDeclarationList(
       [ts.createVariableDeclaration(
         componentName,

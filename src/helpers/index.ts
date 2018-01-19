@@ -128,7 +128,7 @@ export function convertReactStatelessFunctionToArrowFunction(
   )
 
   return ts.createVariableStatement(
-    undefined,
+    statelessFunc.modifiers,
     ts.createVariableDeclarationList(
       [ts.createVariableDeclaration(funcName, undefined, initializer)],
       ts.NodeFlags.Const,
