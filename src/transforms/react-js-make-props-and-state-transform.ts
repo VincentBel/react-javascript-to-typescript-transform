@@ -79,6 +79,8 @@ function visitReactClassDeclaration(
   );
 
   const stateType = getStateTypeOfReactComponentClass(classDeclaration, typeChecker);
+  const shouldMakePropTypeDeclaration = propType.members.length > 0
+  const shouldMakeStateTypeDeclaration = !isStateTypeMemberEmpty(stateType)
   const propTypeName = `${className}Props`;
   const stateTypeName = `${className}State`;
   const propTypeDeclaration = ts.createTypeAliasDeclaration([], [], propTypeName, [], propType);
@@ -88,11 +90,14 @@ function visitReactClassDeclaration(
 
   const newClassDeclaration = getNewReactClassDeclaration(
     classDeclaration,
-    propTypeRef,
-    stateTypeRef,
+    shouldMakePropTypeDeclaration ? propTypeRef : ts.createTypeLiteralNode([]),
+    shouldMakeStateTypeDeclaration ? stateTypeRef : ts.createTypeLiteralNode([]),
   );
 
-  const allTypeDeclarations = [...typeDeclarations, propTypeDeclaration, stateTypeDeclaration];
+  const allTypeDeclarations = [...typeDeclarations]
+  if (shouldMakePropTypeDeclaration) allTypeDeclarations.push(propTypeDeclaration)
+  if (shouldMakeStateTypeDeclaration) allTypeDeclarations.push(stateTypeDeclaration)
+
   let statements = helpers.insertBefore(
     sourceFile.statements,
     classDeclaration,
@@ -104,8 +109,8 @@ function visitReactClassDeclaration(
 
 function getNewReactClassDeclaration(
   classDeclaration: ts.ClassDeclaration,
-  propTypeRef: ts.TypeReferenceNode,
-  stateTypeRef: ts.TypeReferenceNode,
+  propTypeRef: ts.TypeNode,
+  stateTypeRef: ts.TypeNode,
 ) {
   if (!classDeclaration.heritageClauses || !classDeclaration.heritageClauses.length) {
     return classDeclaration;
@@ -138,6 +143,19 @@ function getNewReactClassDeclaration(
     newHeritageClauses,
     classDeclaration.members,
   );
+}
+
+function isStateTypeMemberEmpty(stateType: ts.TypeNode): boolean {
+  // Only need to handle TypeLiteralNode & IntersectionTypeNode
+  if (ts.isTypeLiteralNode(stateType)) {
+    return stateType.members.length === 0
+  }
+
+  if (!ts.isIntersectionTypeNode(stateType)) {
+    return true
+  }
+
+  return stateType.types.every(isStateTypeMemberEmpty)
 }
 
 function getStateTypeOfReactComponentClass(
