@@ -41,17 +41,26 @@ function visitClassDeclaration(
         return classDeclaration;
     }
 
-    const firstHeritageClauses = classDeclaration.heritageClauses[0];
-    const expressionWithTypeArguments = firstHeritageClauses.types[0];
+    const firstHeritageClause = classDeclaration.heritageClauses[0];
 
-    firstHeritageClauses.types[0] = ts.updateExpressionWithTypeArguments(
-        expressionWithTypeArguments,
-        [
-            getPropsTypeOfReactComponentClass(classDeclaration, sourceFile),
-            getStateTypeOfReactComponentClass(classDeclaration, typeChecker),
-        ],
-        expressionWithTypeArguments.expression,
-    )
+    const newFirstHeritageClauseTypes = helpers.replaceItem(
+        firstHeritageClause.types,
+        firstHeritageClause.types[0],
+        ts.updateExpressionWithTypeArguments(
+            firstHeritageClause.types[0],
+            [
+                getPropsTypeOfReactComponentClass(classDeclaration, sourceFile),
+                getStateTypeOfReactComponentClass(classDeclaration, typeChecker),
+            ],
+            firstHeritageClause.types[0].expression,
+        ),
+    );
+
+    const newHeritageClauses = helpers.replaceItem(
+        classDeclaration.heritageClauses,
+        firstHeritageClause,
+        ts.updateHeritageClause(firstHeritageClause, newFirstHeritageClauseTypes),
+    );
 
     return ts.updateClassDeclaration(
         classDeclaration,
@@ -59,7 +68,7 @@ function visitClassDeclaration(
         classDeclaration.modifiers,
         classDeclaration.name,
         classDeclaration.typeParameters,
-        classDeclaration.heritageClauses,
+        newHeritageClauses,
         classDeclaration.members,
     );
 }
@@ -228,39 +237,44 @@ function getStateLookingForSetStateCalls(
  * @param objectLiteral
  */
 function buildInterfaceFromPropTypeObjectLiteral(objectLiteral: ts.ObjectLiteralExpression) {
-    const resultObjectLiteral = objectLiteral.properties.reduce(
-        (result, propertyAssignment: ts.PropertyAssignment) => {
+    const members = objectLiteral.properties
+        // We only need to process PropertyAssignment:
+        // {
+        //    a: 123     // PropertyAssignment
+        // }
+        //
+        // filter out:
+        // {
+        //   a() {},     // MethodDeclaration
+        //   b,          // ShorthandPropertyAssignment
+        //   ...c,       // SpreadAssignment
+        //   get d() {}, // AccessorDeclaration
+        // }
+        .filter(ts.isPropertyAssignment)
+        .filter(property => {
+            return (
+                // Ignore children, React types have it
+                property.name.getText() !== 'children' &&
+                ts.isPropertyAccessExpression(property.initializer)
+            )
+        })
+        .map(propertyAssignment => {
             const name = propertyAssignment.name.getText();
-            if (!helpers.isPropertyAccessExpression(propertyAssignment.initializer)) {
-                console.warn('Bad value for propType', name, 'at', propertyAssignment.getStart());
-                return result;
-            }
+            // We have guarantee this in the previous `filter`
+            const initializer = propertyAssignment.initializer as ts.PropertyAccessExpression
+            const typeValue = getTypeFromReactPropTypeExpression(initializer);
+            const isOptional = isPropTypeOptional(initializer);
 
-            // Ignore children, React types have it
-            if (propertyAssignment.name.getText() === 'children') {
-                return result;
-            }
-
-            // Ignore children, React types have it
-            if (propertyAssignment.name.getText() === 'children') {
-                return result;
-            }
-
-            const typeValue = getTypeFromReactPropTypeExpression(propertyAssignment.initializer);
-            const isOptional = isPropTypeOptional(propertyAssignment.initializer);
-            const propertySignature = ts.createPropertySignature(
+            return ts.createPropertySignature(
                 [],
                 name,
-                isOptional ? ts.createToken(ts.SyntaxKind.QuestionToken): undefined,
+                isOptional ? ts.createToken(ts.SyntaxKind.QuestionToken) : undefined,
                 typeValue,
                 undefined,
             );
-            result.members.push(propertySignature)
-            return result;
-    }, ts.createTypeLiteralNode([]));
+        });
 
-
-    return resultObjectLiteral;
+        return ts.createTypeLiteralNode(members)
 }
 
 /**

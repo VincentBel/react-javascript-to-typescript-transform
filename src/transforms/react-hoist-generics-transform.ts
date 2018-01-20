@@ -42,17 +42,17 @@ export function reactHoistGenericsTransformFactoryFactory(typeChecker: ts.TypeCh
  */
 function hoist(reactClass: ts.ClassDeclaration, sourceFile: ts.SourceFile) {
     if (!reactClass.heritageClauses) {
-        return reactClass;
+        return sourceFile;
     }
     const className = reactClass && reactClass.name && reactClass.name.getText(sourceFile);
     const reactHeritageClauses =  helpers.find(reactClass.heritageClauses, helpers.isReactHeritageClause);
 
     if (reactHeritageClauses === undefined || !reactHeritageClauses.types == undefined) {
-        return reactClass;
+        return sourceFile;
     }
     const [reactType] = reactHeritageClauses.types;
     if (reactType.typeArguments === undefined || reactType.typeArguments.length < 2) {
-        return reactClass;
+        return sourceFile;
     }
 
     const [propType, stateType] = reactType.typeArguments;
