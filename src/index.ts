@@ -6,10 +6,12 @@ import { reactRemovePropTypesAssignmentTransformFactoryFactory } from './transfo
 import { reactMovePropTypesToClassTransformFactoryFactory } from './transforms/react-move-prop-types-to-class-transform';
 import { collapseIntersectionInterfacesTransformFactoryFactory } from './transforms/collapse-intersection-interfaces-transform';
 import { reactRemoveStaticPropTypesMemberTransformFactoryFactory } from './transforms/react-remove-static-prop-types-member-transform';
+import { reactStatelessFunctionMakePropsTransformFactoryFactory } from './transforms/react-stateless-function-make-props-transform';
 
 export {
     reactMovePropTypesToClassTransformFactoryFactory,
     reactJSMakePropsAndStateInterfaceTransformFactoryFactory,
+    reactStatelessFunctionMakePropsTransformFactoryFactory,
     collapseIntersectionInterfacesTransformFactoryFactory,
     reactRemovePropTypesAssignmentTransformFactoryFactory,
     reactRemoveStaticPropTypesMemberTransformFactoryFactory,
@@ -19,6 +21,7 @@ export {
 export const allTransforms = [
     reactMovePropTypesToClassTransformFactoryFactory,
     reactJSMakePropsAndStateInterfaceTransformFactoryFactory,
+    reactStatelessFunctionMakePropsTransformFactoryFactory,
     collapseIntersectionInterfacesTransformFactoryFactory,
     reactRemovePropTypesAssignmentTransformFactoryFactory,
     reactRemoveStaticPropTypesMemberTransformFactoryFactory,

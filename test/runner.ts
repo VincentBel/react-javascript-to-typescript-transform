@@ -9,11 +9,12 @@ import * as ts from 'typescript';
 import * as chalk from 'chalk';
 import {
     reactJSMakePropsAndStateInterfaceTransformFactoryFactory,
+    reactStatelessFunctionMakePropsTransformFactoryFactory,
     reactMovePropTypesToClassTransformFactoryFactory,
     reactRemovePropTypesAssignmentTransformFactoryFactory,
     reactRemoveStaticPropTypesMemberTransformFactoryFactory,
-    allTransforms,
     collapseIntersectionInterfacesTransformFactoryFactory,
+    allTransforms,
     compile,
     TransformFactoryFactory
 } from '../src';
@@ -22,6 +23,7 @@ import {
 /** Map between a transform and its test folder */
 const transformToFolderMap: [string, TransformFactoryFactory[]][] = [
     ['react-js-make-props-and-state-transform', [reactJSMakePropsAndStateInterfaceTransformFactoryFactory]],
+    ['react-stateless-function-make-props-transform', [reactStatelessFunctionMakePropsTransformFactoryFactory]],
     ['react-remove-static-prop-types-member-transform', [reactRemoveStaticPropTypesMemberTransformFactoryFactory]],
     ['react-remove-prop-types-assignment-transform', [reactRemovePropTypesAssignmentTransformFactoryFactory]],
     ['collapse-intersection-interfaces-transform', [collapseIntersectionInterfacesTransformFactoryFactory]],
