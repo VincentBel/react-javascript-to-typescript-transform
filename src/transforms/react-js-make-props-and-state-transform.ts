@@ -1,5 +1,5 @@
 import * as ts from 'typescript';
-
+import * as _ from 'lodash';
 import * as helpers from '../helpers';
 
 export type Factory = ts.TransformerFactory<ts.SourceFile>;
@@ -77,7 +77,7 @@ function getPropsTypeOfReactComponentClass(
     classDeclaration: ts.ClassDeclaration,
     sourceFile: ts.SourceFile,
 ): ts.TypeNode {
-    const staticPropTypesMember = helpers.find(classDeclaration.members, (member) => {
+    const staticPropTypesMember = _.find(classDeclaration.members, (member) => {
         return ts.isPropertyDeclaration(member) &&
             helpers.hasStaticModifier(member) &&
             helpers.isPropTypesMember(member, sourceFile);
@@ -92,7 +92,7 @@ function getPropsTypeOfReactComponentClass(
         return buildInterfaceFromPropTypeObjectLiteral(staticPropTypesMember.initializer)
     }
 
-    const staticPropTypesGetterMember = helpers.find(classDeclaration.members, (member) => {
+    const staticPropTypesGetterMember = _.find(classDeclaration.members, (member) => {
         return ts.isGetAccessorDeclaration(member) &&
             helpers.hasStaticModifier(member) &&
             helpers.isPropTypesMember(member, sourceFile);
@@ -102,7 +102,7 @@ function getPropsTypeOfReactComponentClass(
         staticPropTypesGetterMember !== undefined
         && ts.isGetAccessorDeclaration(staticPropTypesGetterMember) // check to satisfy typechecker
     ) {
-        const returnStatement = helpers.find(
+        const returnStatement = _.find(
             staticPropTypesGetterMember.body.statements,
             (statement) => ts.isReturnStatement(statement),
         );
@@ -149,7 +149,7 @@ function getInitialStateFromClassDeclaration(
 ): ts.TypeNode {
     // initial state class member
 
-    const initialStateMember = helpers.find(classDeclaration.members, (member) => {
+    const initialStateMember = _.find(classDeclaration.members, (member) => {
         try {
             return ts.isPropertyDeclaration(member) &&
                 member.name &&
@@ -169,7 +169,7 @@ function getInitialStateFromClassDeclaration(
     }
 
     // Initial state in constructor
-    const constructor = helpers.find(
+    const constructor = _.find(
         classDeclaration.members,
         (member) => member.kind === ts.SyntaxKind.Constructor,
     ) as ts.ConstructorDeclaration | undefined;

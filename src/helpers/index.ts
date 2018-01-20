@@ -1,5 +1,5 @@
 import * as ts from 'typescript';
-import { find, indexOf, slice } from 'lodash';
+import * as _ from 'lodash';
 
 /**
  * If a class declaration a react class?
@@ -78,7 +78,7 @@ export function hasStaticModifier(classMember: ts.ClassElement) {
     if (!classMember.modifiers) {
         return false;
     }
-    const staticModifier = find(classMember.modifiers, (modifier) => {
+    const staticModifier = _.find(classMember.modifiers, (modifier) => {
         return modifier.kind == ts.SyntaxKind.StaticKeyword;
     });
     return staticModifier !== undefined;
@@ -97,10 +97,6 @@ export function isPropTypesMember(classMember: ts.ClassElement, sourceFile: ts.S
     }
 }
 
-
-export { find };
-
-// export const has = some
 /**
  * Insert an item in middle of an array after a specific item
  * @param collection
@@ -108,11 +104,11 @@ export { find };
  * @param newItem
  */
 export function insertAfter<T>(collection: ArrayLike<T>, afterItem: T, newItem: T) {
-    const index = indexOf(collection, afterItem) + 1;
+    const index = _.indexOf(collection, afterItem) + 1;
 
-    return slice(collection, 0, index)
+    return _.slice(collection, 0, index)
         .concat(newItem)
-        .concat(slice(collection, index));
+        .concat(_.slice(collection, index));
 }
 
 /**
@@ -122,11 +118,11 @@ export function insertAfter<T>(collection: ArrayLike<T>, afterItem: T, newItem: 
  * @param newItem
  */
 export function insertBefore<T>(collection: ArrayLike<T>, beforeItem: T, newItems: T | T[]) {
-    const index = indexOf(collection, beforeItem);
+    const index = _.indexOf(collection, beforeItem);
 
-    return slice(collection, 0, index)
+    return _.slice(collection, 0, index)
         .concat(newItems)
-        .concat(slice(collection, index));
+        .concat(_.slice(collection, index));
 }
 
 /**
@@ -136,10 +132,10 @@ export function insertBefore<T>(collection: ArrayLike<T>, beforeItem: T, newItem
  * @param newItem
  */
 export function replaceItem<T>(collection: ArrayLike<T>, item: T, newItem: T) {
-    const index = indexOf(collection, item);
-    return slice(collection, 0, index)
+    const index = _.indexOf(collection, item);
+    return _.slice(collection, 0, index)
         .concat(newItem)
-        .concat(slice(collection, index + 1));
+        .concat(_.slice(collection, index + 1));
 }
 
 /**
@@ -149,6 +145,6 @@ export function replaceItem<T>(collection: ArrayLike<T>, item: T, newItem: T) {
  * @param newItem
  */
 export function removeItem<T>(collection: ArrayLike<T>, item: T) {
-    const index = indexOf(collection, item);
-    return slice(collection, 0, index).concat(slice(collection, index + 1));
+    const index = _.indexOf(collection, item);
+    return _.slice(collection, 0, index).concat(_.slice(collection, index + 1));
 }

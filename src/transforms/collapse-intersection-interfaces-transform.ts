@@ -33,8 +33,10 @@ export function collapseIntersectionInterfacesTransformFactoryFactory(
             function visitTypeAliasDeclaration(node: ts.TypeAliasDeclaration) {
                 if (
                     ts.isIntersectionTypeNode(node.type)
-                    && node.type.types.every((type) => ts.isTypeLiteralNode(type))
+                    && node.type.types.every(ts.isTypeLiteralNode)
                 ) {
+                    // We need cast `node.type.types` to `ts.NodeArray<ts.TypeLiteralNode>`
+                    // because TypeScript can't figure out `node.type.types.every(ts.isTypeLiteralNode)`
                     const allMembers = (node.type.types as ts.NodeArray<ts.TypeLiteralNode>)
                         .map((type) => type.members)
                         .reduce((all, members) => ts.createNodeArray(all.concat(members)), ts.createNodeArray([]));

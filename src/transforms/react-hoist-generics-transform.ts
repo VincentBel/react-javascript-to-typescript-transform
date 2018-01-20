@@ -1,4 +1,5 @@
 import * as ts from 'typescript';
+import * as _ from 'lodash';
 
 import * as helpers from '../helpers';
 
@@ -45,7 +46,7 @@ function hoist(reactClass: ts.ClassDeclaration, sourceFile: ts.SourceFile) {
         return sourceFile;
     }
     const className = reactClass && reactClass.name && reactClass.name.getText(sourceFile);
-    const reactHeritageClauses =  helpers.find(reactClass.heritageClauses, helpers.isReactHeritageClause);
+    const reactHeritageClauses = _.find(reactClass.heritageClauses, helpers.isReactHeritageClause);
 
     if (reactHeritageClauses === undefined || !reactHeritageClauses.types == undefined) {
         return sourceFile;
@@ -97,7 +98,7 @@ function insertTypeRefs(
     if (reactClassDeclaration.heritageClauses === undefined) {
         return reactClassDeclaration;
     }
-    const reactHeritageClause = helpers.find(reactClassDeclaration.heritageClauses, helpers.isReactHeritageClause);
+    const reactHeritageClause = _.find(reactClassDeclaration.heritageClauses, helpers.isReactHeritageClause);
 
     if (reactHeritageClause === undefined) {
         return reactClassDeclaration;

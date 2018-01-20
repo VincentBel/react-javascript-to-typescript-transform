@@ -1,4 +1,5 @@
 import * as ts from 'typescript';
+import * as _ from 'lodash';
 
 import * as helpers from '../helpers';
 
@@ -56,7 +57,7 @@ function visitSourceFile(sourceFile: ts.SourceFile, typeChecker: ts.TypeChecker)
         // Look for the class declarations with the same name
         const componentName = getComponentName(propTypeAssignment, sourceFile);
 
-        const classStatement = helpers.find(
+        const classStatement = _.find(
             statements,
             (statement) => ts.isClassDeclaration(statement) &&
                 statement.name !== undefined &&
