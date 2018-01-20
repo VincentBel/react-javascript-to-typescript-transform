@@ -18,7 +18,7 @@ export function reactJSMakePropsAndStateInterfaceTransformFactoryFactory(typeChe
             return visited;
 
             function visitor(node: ts.Node) {
-                if (helpers.isClassDeclaration(node)) {
+                if (ts.isClassDeclaration(node)) {
                     return visitClassDeclaration(node, sourceFile, typeChecker);
                 }
 
@@ -78,39 +78,39 @@ function getPropsTypeOfReactComponentClass(
     sourceFile: ts.SourceFile,
 ): ts.TypeNode {
     const staticPropTypesMember = helpers.find(classDeclaration.members, (member) => {
-        return helpers.isPropertyDeclaration(member) &&
+        return ts.isPropertyDeclaration(member) &&
             helpers.hasStaticModifier(member) &&
             helpers.isPropTypesMember(member, sourceFile);
     });
 
     if (
         staticPropTypesMember !== undefined
-        && helpers.isPropertyDeclaration(staticPropTypesMember) // check to satisfy type checker
+        && ts.isPropertyDeclaration(staticPropTypesMember) // check to satisfy type checker
         && staticPropTypesMember.initializer
-        && helpers.isObjectLiteralExpression(staticPropTypesMember.initializer)
+        && ts.isObjectLiteralExpression(staticPropTypesMember.initializer)
     ) {
         return buildInterfaceFromPropTypeObjectLiteral(staticPropTypesMember.initializer)
     }
 
     const staticPropTypesGetterMember = helpers.find(classDeclaration.members, (member) => {
-        return helpers.isGetAccessorDeclaration(member) &&
+        return ts.isGetAccessorDeclaration(member) &&
             helpers.hasStaticModifier(member) &&
             helpers.isPropTypesMember(member, sourceFile);
     });
 
     if (
         staticPropTypesGetterMember !== undefined
-        && helpers.isGetAccessorDeclaration(staticPropTypesGetterMember) // check to satisfy typechecker
+        && ts.isGetAccessorDeclaration(staticPropTypesGetterMember) // check to satisfy typechecker
     ) {
         const returnStatement = helpers.find(
             staticPropTypesGetterMember.body.statements,
-            (statement) => helpers.isReturnStatement(statement),
+            (statement) => ts.isReturnStatement(statement),
         );
         if (
             returnStatement !== undefined
-            && helpers.isReturnStatement(returnStatement) // check to satisfy typechecker
+            && ts.isReturnStatement(returnStatement) // check to satisfy typechecker
             && returnStatement.expression
-            && helpers.isObjectLiteralExpression(returnStatement.expression)
+            && ts.isObjectLiteralExpression(returnStatement.expression)
         ) {
             return buildInterfaceFromPropTypeObjectLiteral(
                 returnStatement.expression
@@ -151,7 +151,7 @@ function getInitialStateFromClassDeclaration(
 
     const initialStateMember = helpers.find(classDeclaration.members, (member) => {
         try {
-            return helpers.isPropertyDeclaration(member) &&
+            return ts.isPropertyDeclaration(member) &&
                 member.name &&
                 member.name.getText() === 'state';
         } catch(e) {
@@ -160,7 +160,7 @@ function getInitialStateFromClassDeclaration(
     });
 
     if (initialStateMember
-        && helpers.isPropertyDeclaration(initialStateMember)
+        && ts.isPropertyDeclaration(initialStateMember)
         && initialStateMember.initializer
     ) {
         const type = typeChecker.getTypeAtLocation(initialStateMember.initializer)!
@@ -177,8 +177,8 @@ function getInitialStateFromClassDeclaration(
     if (constructor && constructor.body) {
         for (const statement of constructor.body.statements) {
             if (
-                helpers.isExpressionStatement(statement) &&
-                helpers.isBinaryExpression(statement.expression) &&
+                ts.isExpressionStatement(statement) &&
+                ts.isBinaryExpression(statement.expression) &&
                 statement.expression.left.getText() === 'this.state'
             ) {
                 return typeChecker.typeToTypeNode(
@@ -203,7 +203,7 @@ function getStateLookingForSetStateCalls(
 ): ts.TypeNode[] {
     const typeNodes: ts.TypeNode[] = [];
     for (const member of classDeclaration.members) {
-        if (member && helpers.isMethodDeclaration(member) && member.body) {
+        if (member && ts.isMethodDeclaration(member) && member.body) {
             lookForSetState(member.body)
         }
     }
@@ -213,8 +213,8 @@ function getStateLookingForSetStateCalls(
     function lookForSetState(node: ts.Node) {
         ts.forEachChild(node, lookForSetState)
         if (
-            helpers.isExpressionStatement(node) &&
-            helpers.isCallExpression(node.expression) &&
+            ts.isExpressionStatement(node) &&
+            ts.isCallExpression(node.expression) &&
             node.expression.expression.getText().match(/setState/)
         ) {
             const type = typeChecker.getTypeAtLocation(node.expression.arguments[0])

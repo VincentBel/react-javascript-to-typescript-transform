@@ -26,7 +26,7 @@ export function reactHoistGenericsTransformFactoryFactory(typeChecker: ts.TypeCh
     function visitSourceFile(sourceFile: ts.SourceFile) {
 
         for (const statement of sourceFile.statements) {
-            if (helpers.isClassDeclaration(statement) && helpers.isReactComponent(statement, typeChecker)) {
+            if (ts.isClassDeclaration(statement) && helpers.isReactComponent(statement, typeChecker)) {
                 return hoist(statement, sourceFile);
             }
         }

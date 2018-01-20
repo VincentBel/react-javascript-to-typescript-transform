@@ -1,8 +1,5 @@
 import * as ts from 'typescript';
 import { find, indexOf, slice } from 'lodash';
-import * as kinds from './isKind';
-
-export * from './isKind';
 
 /**
  * If a class declaration a react class?
@@ -55,7 +52,7 @@ export function isReactComponent(classDeclaration: ts.ClassDeclaration, typeChec
 export function isReactHeritageClause(clause: ts.HeritageClause) {
     return clause.token === ts.SyntaxKind.ExtendsKeyword &&
         clause.types.length === 1 &&
-        kinds.isExpressionWithTypeArguments(clause.types[0]) &&
+        ts.isExpressionWithTypeArguments(clause.types[0]) &&
         /Component/.test(clause.types[0].expression.getText());
 }
 
@@ -66,10 +63,10 @@ export function isReactHeritageClause(clause: ts.HeritageClause) {
  * @param statement
  */
 export function isReactPropTypeAssignmentStatement(statement: ts.Statement): statement is ts.ExpressionStatement {
-    return kinds.isExpressionStatement(statement)
-        && kinds.isBinaryExpression(statement.expression)
+    return ts.isExpressionStatement(statement)
+        && ts.isBinaryExpression(statement.expression)
         && statement.expression.operatorToken.kind === ts.SyntaxKind.FirstAssignment
-        && kinds.isPropertyAccessExpression(statement.expression.left)
+        && ts.isPropertyAccessExpression(statement.expression.left)
         && /\.propTypes$|\.propTypes\..+$/.test(statement.expression.left.getText())
 }
 

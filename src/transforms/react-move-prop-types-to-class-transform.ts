@@ -58,13 +58,13 @@ function visitSourceFile(sourceFile: ts.SourceFile, typeChecker: ts.TypeChecker)
 
         const classStatement = helpers.find(
             statements,
-            (statement) => helpers.isClassDeclaration(statement) &&
+            (statement) => ts.isClassDeclaration(statement) &&
                 statement.name !== undefined &&
                 statement.name.getText(sourceFile) === componentName,
         ) as {} as ts.ClassDeclaration; // Type weirdness
 
         // && helpers.isBinaryExpression(propTypeAssignment.expression) is redundant to satisfy the type checker
-        if (classStatement && helpers.isBinaryExpression(propTypeAssignment.expression)) {
+        if (classStatement && ts.isBinaryExpression(propTypeAssignment.expression)) {
             const newClassStatement = addStaticMemberToClass(
                 classStatement,
                 'propTypes',

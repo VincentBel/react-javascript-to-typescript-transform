@@ -23,7 +23,7 @@ export function collapseIntersectionInterfacesTransformFactoryFactory(
             return visited;
 
             function visitor(node: ts.Node) {
-                if (helpers.isTypeAliasDeclaration(node)) {
+                if (ts.isTypeAliasDeclaration(node)) {
                     return visitTypeAliasDeclaration(node);
                 }
 
@@ -32,8 +32,8 @@ export function collapseIntersectionInterfacesTransformFactoryFactory(
 
             function visitTypeAliasDeclaration(node: ts.TypeAliasDeclaration) {
                 if (
-                    helpers.isIntersectionTypeNode(node.type)
-                    && node.type.types.every((type) => helpers.isTypeLiteralNode(type))
+                    ts.isIntersectionTypeNode(node.type)
+                    && node.type.types.every((type) => ts.isTypeLiteralNode(type))
                 ) {
                     const allMembers = (node.type.types as ts.NodeArray<ts.TypeLiteralNode>)
                         .map((type) => type.members)
