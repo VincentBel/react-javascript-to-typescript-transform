@@ -8,7 +8,6 @@ import * as fs from 'fs';
 import * as ts from 'typescript';
 import * as chalk from 'chalk';
 import {
-    reactHoistGenericsTransformFactoryFactory,
     reactJSMakePropsAndStateInterfaceTransformFactoryFactory,
     reactMovePropTypesToClassTransformFactoryFactory,
     reactRemovePropTypesAssignmentTransformFactoryFactory,
@@ -23,7 +22,6 @@ import {
 /** Map between a transform and its test folder */
 const transformToFolderMap: [string, TransformFactoryFactory[]][] = [
     ['react-js-make-props-and-state-transform', [reactJSMakePropsAndStateInterfaceTransformFactoryFactory]],
-    ['react-hoist-generics-transform', [reactHoistGenericsTransformFactoryFactory]],
     ['react-remove-static-prop-types-member-transform', [reactRemoveStaticPropTypesMemberTransformFactoryFactory]],
     ['react-remove-prop-types-assignment-transform', [reactRemovePropTypesAssignmentTransformFactoryFactory]],
     ['collapse-intersection-interfaces-transform', [collapseIntersectionInterfacesTransformFactoryFactory]],
