@@ -14,7 +14,7 @@ import * as helpers from '../helpers';
  */
 export function collapseIntersectionInterfacesTransformFactoryFactory(
         typeChecker: ts.TypeChecker,
-    ): ts.TransformerFactory<ts.Node> {
+    ): ts.TransformerFactory<ts.SourceFile> {
     return function collapseIntersectionInterfacesTransformFactory(context: ts.TransformationContext) {
         return function collapseIntersectionInterfacesTransform(sourceFile: ts.SourceFile) {
             const visited = ts.visitEachChild(sourceFile, visitor, context);

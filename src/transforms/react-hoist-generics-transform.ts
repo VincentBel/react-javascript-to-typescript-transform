@@ -2,6 +2,8 @@ import * as ts from 'typescript';
 
 import * as helpers from '../helpers';
 
+export type Factory = ts.TransformerFactory<ts.SourceFile>;
+
 /**
  * Hoist generics to top of a class declarations in a React component
  *
@@ -14,7 +16,7 @@ import * as helpers from '../helpers';
  * type SomeComponentState = {bar: string;};
  * class SomeComponent extends React.Component<SomeComponentProps, SomeComponentState> {}
  */
-export function reactHoistGenericsTransformFactoryFactory(typeChecker: ts.TypeChecker): ts.TransformerFactory<ts.Node> {
+export function reactHoistGenericsTransformFactoryFactory(typeChecker: ts.TypeChecker): Factory {
     return function reactHoistGenericsTransformFactory(context: ts.TransformationContext) {
         return function reactHoistGenericsTransform(node: ts.SourceFile) {
             return visitSourceFile(node);

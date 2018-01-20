@@ -2,7 +2,7 @@ import * as ts from 'typescript';
 
 import * as helpers from '../helpers';
 
-export type Factory = ts.TransformerFactory<ts.Node>;
+export type Factory = ts.TransformerFactory<ts.SourceFile>;
 
 /**
  * Get transform for transforming React code originally written in JS which does not have
