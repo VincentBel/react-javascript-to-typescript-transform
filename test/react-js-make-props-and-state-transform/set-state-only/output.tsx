@@ -1,8 +1,7 @@
 import * as React from 'react';
-type MyComponentProps = {
-};
 type MyComponentState = { foo: number; bar: number; };
-export default class MyComponent extends React.Component<MyComponentProps, MyComponentState> {
+export default class MyComponent extends React.Component<{
+    }, MyComponentState> {
     render() {
         return <button onClick={this.onclick.bind(this)}/>;
     }

@@ -39,9 +39,8 @@ type MyComponentProps = {
         fontSize: number;
     };
 };
-type MyComponentState = {
-};
-export default class MyComponent extends React.Component<MyComponentProps, MyComponentState> {
+export default class MyComponent extends React.Component<MyComponentProps, {
+    }> {
     static propTypes = {
         children: React.PropTypes.node,
         any: React.PropTypes.any,

@@ -77,13 +77,13 @@ function visitReactStatelessComponent(
     let componentInitializer = arrowFuncComponent.declarationList.declarations[0].initializer;
 
     const propType = getPropTypesFromTypeAssignment(propTypesExpressionStatement);
-
+    const shouldMakePropTypeDeclaration = propType.members.length > 0;
     const propTypeName = `${componentName}Props`;
     const propTypeDeclaration = ts.createTypeAliasDeclaration([], [], propTypeName, [], propType);
     const propTypeRef = ts.createTypeReferenceNode(propTypeName, []);
 
     let componentType = ts.createTypeReferenceNode(ts.createQualifiedName(ts.createIdentifier('React'), 'SFC'), [
-        propTypeRef,
+        shouldMakePropTypeDeclaration ? propTypeRef : propType,
     ]);
 
     // replace component with ts stateless component
@@ -95,7 +95,9 @@ function visitReactStatelessComponent(
         ),
     );
 
-    let statements = helpers.insertBefore(sourceFile.statements, component, [propTypeDeclaration]);
+    let statements = shouldMakePropTypeDeclaration
+        ? helpers.insertBefore(sourceFile.statements, component, [propTypeDeclaration])
+        : sourceFile.statements;
 
     statements = helpers.replaceItem(statements, component, typedComponent);
     return ts.updateSourceFileNode(sourceFile, statements);

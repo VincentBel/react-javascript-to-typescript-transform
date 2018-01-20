@@ -41,6 +41,8 @@ function visitReactClassDeclaration(
     const className = classDeclaration && classDeclaration.name && classDeclaration.name.getText(sourceFile);
     const propType = getPropsTypeOfReactComponentClass(classDeclaration, sourceFile);
     const stateType = getStateTypeOfReactComponentClass(classDeclaration, typeChecker);
+    const shouldMakePropTypeDeclaration = propType.members.length > 0;
+    const shouldMakeStateTypeDeclaration = !isStateTypeMemberEmpty(stateType);
     const propTypeName = `${className}Props`;
     const stateTypeName = `${className}State`;
     const propTypeDeclaration = ts.createTypeAliasDeclaration([], [], propTypeName, [], propType);
@@ -48,12 +50,17 @@ function visitReactClassDeclaration(
     const propTypeRef = ts.createTypeReferenceNode(propTypeName, []);
     const stateTypeRef = ts.createTypeReferenceNode(stateTypeName, []);
 
-    const newClassDeclaration = getNewReactClassDeclaration(classDeclaration, propTypeRef, stateTypeRef);
+    const newClassDeclaration = getNewReactClassDeclaration(
+        classDeclaration,
+        shouldMakePropTypeDeclaration ? propTypeRef : propType,
+        shouldMakeStateTypeDeclaration ? stateTypeRef : stateType,
+    );
 
-    let statements = helpers.insertBefore(sourceFile.statements, classDeclaration, [
-        propTypeDeclaration,
-        stateTypeDeclaration,
-    ]);
+    const allTypeDeclarations = [];
+    if (shouldMakePropTypeDeclaration) allTypeDeclarations.push(propTypeDeclaration);
+    if (shouldMakeStateTypeDeclaration) allTypeDeclarations.push(stateTypeDeclaration);
+
+    let statements = helpers.insertBefore(sourceFile.statements, classDeclaration, allTypeDeclarations);
     statements = helpers.replaceItem(statements, classDeclaration, newClassDeclaration);
     return ts.updateSourceFileNode(sourceFile, statements);
 }
@@ -99,7 +106,7 @@ function getNewReactClassDeclaration(
 function getPropsTypeOfReactComponentClass(
     classDeclaration: ts.ClassDeclaration,
     sourceFile: ts.SourceFile,
-): ts.TypeNode {
+): ts.TypeLiteralNode {
     const staticPropTypesMember = _.find(classDeclaration.members, member => {
         return (
             ts.isPropertyDeclaration(member) &&
@@ -237,4 +244,17 @@ function getStateLookingForSetStateCalls(
             typeNodes.push(typeChecker.typeToTypeNode(type));
         }
     }
+}
+
+function isStateTypeMemberEmpty(stateType: ts.TypeNode): boolean {
+    // Only need to handle TypeLiteralNode & IntersectionTypeNode
+    if (ts.isTypeLiteralNode(stateType)) {
+        return stateType.members.length === 0;
+    }
+
+    if (!ts.isIntersectionTypeNode(stateType)) {
+        return true;
+    }
+
+    return stateType.types.every(isStateTypeMemberEmpty);
 }
